@@ -1,0 +1,258 @@
+@charset "UTF-8";
+
+/* body全体のmargin/paddingをリセットするための設定 */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* typeがnumberのinputを右寄せに設定 */
+input[type="number"]{
+  text-align: right;
+}
+
+/* headerをflixboxコンテナに設定 */
+header {
+  display: flex;
+  background: orange;
+  color: white;
+  height: 70px;
+}
+header h1 {
+  margin: 0;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+ul {
+  display: flex;
+  margin-top: 25px;
+}
+
+li {
+  list-style: none;
+  margin-left: 20px;
+}
+
+header div {
+  margin-left:auto;
+  margin-right: 20px;
+  margin-top: 10px;
+  text-align: right;
+}
+
+body div h1 {
+  margin-left: 20px;
+}
+
+/* ユーザー名とパスワードのinputの幅を設定 */
+input[name=userName] {
+  width: 100px;
+}
+
+input[name=password] {
+  width: 100px;
+}
+
+#information {
+  padding: 5px 0 100px;
+  color: #222;
+  text-align: center;
+  background-color: #e9e279;
+}
+
+#information .wrapper {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1000px;
+}
+
+#information h1 {
+  display: inline-block;
+  margin: 0 auto 40px;
+  padding-bottom: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-bottom: 4px solid #222;
+}
+
+#information article {
+  margin-bottom: 40px;
+  padding: 40px 40px 35px;
+  text-align: left;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+#information article .text_date {
+  font-size: 0.85rem;
+}
+
+#information article h2 {
+  margin-bottom: 30px;
+  padding-bottom: 12px;
+  font-size: 1.15rem;
+  line-height: 1.8em;
+  border-bottom: 2px solid #d5c800;
+}
+
+#information article .text_content {
+  line-height: 2.0em;
+  font-size: 0.85rem;
+}
+
+/* tableのデフォルトデザインを設定 */
+table {
+  margin: 20px;
+  border-collapse: collapse;
+}
+
+/* table内のtdとthの枠線を設定 */
+table td,table th {
+  border: 1px solid grey;
+}
+
+/* th(テーブルのヘッダー)を背景色：緑、文字色：白で設定 */
+th {
+  background-color: darkorange;
+  color: white;
+}
+
+/* th内の子要素たちについて、をれぞれの幅を設定 */
+th:nth-child(1) {
+  width: 30px;
+}
+th:nth-child(2) {
+  width: 150px;
+}
+th:nth-child(3) {
+  width: 120px;
+}
+th:nth-child(4) {
+  width: 60px;
+}
+th:nth-child(5) {
+  width: 120px;
+}
+
+/* td内の子要素たちについて、それぞれの文字寄せ方向を設定(右寄せ、左寄せ、中央寄せ) */
+td:nth-child(1) {
+  text-align: center;
+}
+td:nth-child(2) {
+  text-align: left;
+}
+td:nth-child(3) {
+  text-align: right;
+}
+td:nth-child(4) {
+  text-align: center;
+}
+td:nth-child(5) {
+  text-align: center;
+}
+
+/* td内にあるinputの幅と、テキストの右寄せを設定 */
+td input {
+  width: 85%;
+  text-align: right;
+}
+
+table#sum thead tr th:nth-child(1) {
+  width: 150px;
+}
+table#sum thead tr th:nth-child(2) {
+  width: 60px;
+}
+table#sum thead tr th:nth-child(3) {
+  width: 250px;
+}
+
+/* 履歴テーブルのthead内のtrと、thの子要素に対してデザインを設定 */
+table#sum tbody tr td:nth-child(1) {
+  padding: 0 5px;
+  text-align: left;
+}
+table#sum tbody tr td:nth-child(2) {
+  width: 0 5px;
+  text-align: right;
+}
+table#sum tbody tr td:nth-child(3) {
+  width: 0 5px;
+  text-align: left;
+}
+
+/* カートテーブル、履歴テーブルのthに対してデザインを設定 */
+table#cart thead tr th,table#history thead tr th,table#sum thead tr th {
+  background: #c0c0c0 !important;
+  color: black;
+}
+
+table#history thead tr th:nth-child(1) {
+  width: 150px;
+}
+table#history thead tr th:nth-child(2) {
+  width: 60px;
+}
+table#history thead tr th:nth-child(3) {
+  width: 250px;
+}
+
+/* 履歴テーブルのthead内のtrと、thの子要素に対してデザインを設定 */
+table#history tbody tr td:nth-child(1) {
+  padding: 0 5px;
+  text-align: left;
+}
+table#history tbody tr td:nth-child(2) {
+  width: 0 5px;
+  text-align: right;
+}
+table#history tbody tr td:nth-child(3) {
+  width: 0 5px;
+  text-align: left;
+}
+
+/* 管理者用 商品登録ページのデザインを設定 */
+#adminPage {
+  margin: 0 30px;
+}
+
+/* 管理者用 商品テーブルのthead内のtrと、thの子要素に対してのデザインを設定 */
+table#adminTable thead tr th:nth-child(1) {
+  width: 50px;
+}
+table#adminTable thead tr th:nth-child(2) {
+  width: 150px;
+}
+table#adminTable thead tr th:nth-child(3) {
+  width: 100px;
+}
+table#adminTable thead tr th:nth-child(4) {
+  width: 80px;
+}
+
+/* 管理者用 商品テーブルのtbody内のtrと、tdの子要素に対してデザイン設定 */
+table#adminTable tbody tr td:nth-child(1) {
+  padding: 0 5px;
+  text-align: right;
+}
+table#adminTable tbody tr td:nth-child(2) {
+  padding: 0 5px;
+  text-align: left;
+}
+table#adminTable tbody tr td:nth-child(3) {
+  padding: 0 5px;
+  text-align: right;
+}
+table#adminTable tbody tr td:nth-child(4) {
+  text-align: center;
+}
+
+/* エラーメッセージの文字色を赤にするための設定 */
+.error {
+  color: red;
+}
+
+
+
+

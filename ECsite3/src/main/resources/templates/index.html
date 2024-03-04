@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+
+<title>ECサイト</title>
+
+<script>
+  
+  let cartList = [];
+  
+  document.addEventListener('DOMContentLoaded',event => {
+    
+    // "class=cartBtn" を持つ要素(複数存在するため class 指定)を取得する
+    const cartBtns = document.querySelectorAll(".cartBtn");
+    // cartBtns をループさせ、個々のボタンにて "click" イベントが発火した際 addCart関数を呼び出す
+    cartBtns.forEach((btn) => {
+      btn.addEventListener("click",addCart);
+    });
+    
+    document.getElementById("loginForm").addEventListener("submit",disableCan);
+    
+    document.getElementById("conf").addEventListener("click",disableCan);
+    
+  });
+  
+  function disableCan(event) {
+    
+    const claimPrice = document.getElementById("claimPrice").textContent;
+    const regex = /[^0-9]/g;
+    const result = claimPrice.replace(regex,"");
+ 
+    if(result == "0" || null) {
+      document.getElementById("purchaseConfirm").style.display = "none";
+      document.getElementById("cart_area").style.display = "none";
+    }  
+  }  
+  
+  function initCart() {
+    //カートを初期化する
+    const tbody = document.querySelector("#cart tbody");
+    while(tbody.lastChild){
+      tbody.removeChild(tbody.lastChild);
+    }
+  }
+  
+  function initConfirm() {
+    
+    document.getElementById("confirm_area").innerHTML = "商品計: 0 円";
+    document.getElementById("claimPrice").innerHTML = "請求金額: 0 円";
+   
+  }
+  
+  function addCart(event) {
+    
+    //カート追加ボタンの親要素のさらに親要素から、"td"要素をすべて抽出し、tdListに格納する
+    const tdList = event.target.parentElement.parentElement.querySelectorAll("td");
+    
+    const price1 = tdList.item(2).innerText;
+    const count1 = tdList.item(3).querySelector("input").value;
+    const tax = 1.1;
+    const regex = /[^0-9]/g;
+    const rePrice = price1.replace(regex,"");
+    
+    const subtotal = Number((rePrice * tax) * count1);
+    const priceTotal = `\xA5 ${subtotal.toLocaleString()}`;
+    
+     //tdListから、商品情報を取得し、JSオブジェクト(key:value)形式でgoodsInfoに代入する
+    let goodsInfo = {
+      "id":tdList.item(0).innerText,
+      "goodsName":tdList.item(1).innerText,
+      "price":tdList.item(2).innerText,
+      "count":tdList.item(3).querySelector("input").value,
+      "subtotal":priceTotal     
+      };
+      
+      if(goodsInfo.count === "0" || goodsInfo.count === ""){
+        alert("注文数が0または空欄です");
+        return; //注文数0ならば、ここで関数処理終了
+        }
+        
+      let getCart = document.getElementById("cart").innerHTML;
+      const result1 = getCart.match(goodsInfo.goodsName);
+      let Target = event.target.parentElement.parentElement.getAttribute("name"); 
+         
+      if(result1 !== null){
+        
+         let goodsInfo = { 
+          "id":tdList.item(0).innerText,
+          "goodsName":tdList.item(1).innerText,
+          "price":tdList.item(2).innerText,
+          "count":tdList.item(3).querySelector("input").value,
+          "subtotal":priceTotal
+         };
+         
+       for(i = 0; i < cartList.length; i++){
+       if(cartList[i]["goodsName"] == goodsInfo.goodsName) {
+         cartList[i] = goodsInfo;
+       } 
+     }  
+      }else{
+         document.getElementById("cart_area").style.display = "block";
+         cartList.push(goodsInfo);
+     }
+       
+      // グローバル変数 cartList に対して、カート追加対象の商品情報をpushする
+      // カート表はゼロから再構築するため、tbody内の要素をクリアする
+      initCart();
+      // グローバル変数 cartList をループさせ、カート表を再構築する
+      cartList.forEach(cart => {
+        
+        // 行(tr)作成
+        const tr = document.createElement("tr");
+        let Getr = document.getElementById("cart").getElementsByTagName("tr");
+        let gGLTbl = document.getElementById("goodsListTable").getElementsByTagName("tr");
+        
+        // cartオブジェクトを[key,value]でループさせ、個々のtd要素を作成し、trに追加する(本処理ではkeyは未使用)
+        for ([key,value] of Object.entries(cart)) {
+            const td = document.createElement("td");
+            td.innerText = value;
+            td.setAttribute("class","text-center")
+            tr.appendChild(td);
+            
+
+          for(let i = 0; i <= Getr.length-1; i++ ){
+            tr.setAttribute("id", "itemNo"+i);
+            event.target.parentElement.parentElement.setAttribute("name", "itemNo"+i);
+          }
+        
+      }
+        
+        // カート削除ボタンを作成する
+        const removeBtn = document.createElement("button");
+        removeBtn.innerText = "カート削除";
+        // カート削除ボタンにclass属性を設定する
+        removeBtn.setAttribute("class","btn btn-danger");
+        // カート削除ボタンに対し、click時のイベントリスナを追加する
+        removeBtn.addEventListener("click",removeCart);
+        removeBtn.addEventListener("click",disableCan);
+        // td要素を作成し、カート削除ボタンを子要素として追加する
+        const td = document.createElement("td");
+        td.appendChild(removeBtn);
+        
+        // td要素を作成し、カート削除ボタン配置済のtdを子要素として追加する
+        tr.appendChild(td);
+        
+        const tbody = document.querySelector("#cart tbody");
+        tbody.appendChild(tr);
+        
+      });
+      
+     }
+       
+     function removeCart(event) {
+       console.log(cartList);
+       if(cartList.length == 1) {
+          document.getElementById("cart_area").style.display = "none";
+        }
+       
+       // 削除ボタンの親要素のさらに親要素を取得し、trに格納する
+       const tr = event.target.parentElement.parentElement;
+       const removePrice = tr.cells[4].innerText;
+       
+       const claimPrice = document.getElementById("claimPrice").innerText;
+       const confirmPrice = document.getElementById("confirm_area").innerText;
+       
+       const regex = /[^0-9]/g;
+       const reClaimPrice = claimPrice.replace(regex,"");
+       const reConfirmPrice = confirmPrice.replace(regex,"");
+       const RremovePrice = removePrice.replace(regex,"");
+       
+       document.getElementById("claimPrice").textContent = "請求金額: " + Number(reClaimPrice - RremovePrice) + " 円";
+       document.getElementById("confirm_area").textContent = "商品計: " + Number(reConfirmPrice - RremovePrice) + " 円";
+        
+       // tr内のすべての"td"を取得し、tdListに格納する
+       const tdList = tr.querySelectorAll("td");
+       
+       // 削除対象のカート情報のidを取得する
+       const id = tdList.item(0).innerText;
+       // 該当idと一致しない(= 削除対象ではない)情報のみで、cartListをフィルタリングする
+       cartList = cartList.filter(cart => {
+         return cart.id !== id;
+       });
+       
+       // カート表の削除対象から子要素をすべて消去する
+       while(tr.lastChild){
+         tr.removeChild(tr.lastChild);
+       }
+     }
+     
+ </script>
+  
+</head>
+
+<body>
+  
+ <header>
+  
+  <ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/ecsite/information">Info</a>
+  </li>
+</ul>
+   
+ <div th:insert="fragments/header :: header"></div>
+ 
+ </header>
+ 
+ <div id="Thu" Style="display: none;">
+   <h1>セール開催中！</h1>
+ </div>
+ 
+ <table id="goodsListTable" class="table table-hover container text-center">
+   <thead>
+      <tr>
+        <th style="width:5px">ID</th><th style="width:70px">商品名</th><th>価格(税抜)</th><th class="text-center">注文数</th><th style="width:30px" class="text-center">カート</th>
+      </tr>
+   </thead>
+       
+   <tbody> 
+     <tr th:each="item: ${goods}">
+       <td class="text-center pt-3" th:text="${item.id}" />
+       <td class="text-center pt-3" th:text="${item.goodsName}" />
+       <td class="text-center pt-3" th:text="${'\ ' + T(java.lang.String).format('%,d',item.price)}" />
+       <td><input type="number" pattern="^[0-9]+$" class="count" max="10" min="0" value="0"/></td>
+       <td><button class="cartBtn btn btn-outline-primary">カートに入れる</button></td>
+     </tr>
+   </tbody>
+ </table>
+ 
+ <div id="cart_area" Style="display: none;" class="clearfix">
+     <legend>カート</legend>
+   <table id="cart" class="text-center">
+     <thead>
+       <tr>
+         <th class="text-center">ID</th><th>商品名</th><th>価格(税抜)</th><th>注文数</th><th>小計(税込)</th><th>カート</th>
+       </tr>
+     </thead>
+     <tbody>
+       
+     </tbody>
+   </table>
+   <button id="conf">購入手続きへ</button>
+ </div>
+ 
+ <div id="purchaseConfirm" Style="display: none;" class="border border-dark mt-3">
+   <legend>購入確認</legend>
+   
+    <p id="address">住所: 未登録</p>
+    <p id="postage_area">送料: 未登録 円</p>
+    <p id="tax">消費税: 10 %</p>
+    <div id="confirm_area">商品計: 0 円</div>
+    
+    <h1 id="claimPrice">請求金額: 0 円</h1>
+    
+    <form name ="couponForm" id="couponForm" method="post" action="CouponForm">
+      クーポン:<input type ="text" id="couponCode" name="couponCode">
+      <button type="submit" id="couponBtn">クーポン適用</button>
+    </form>
+ 
+    <button id="purchaseBtn" class="btn btn-outline-primary mt-2 mb-2">購入</button>
+ </div>
+  
+  <div class="mt-3">
+   <legend>購入履歴</legend>
+   <table class="text-center" id="history">
+    <thead>
+      <tr>
+        <th>商品名 </th><th>注文数</th><th>購入日時</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+   </table>
+   <button id="historyBtn">履歴を表示</button>
+ </div>
+
+ <script src="/js/login.js"></script>
+ <script src="/js/blur.js"></script>
+ <script src="/js/postage.js"></script>
+ <script src="/js/selectAddress.js"></script>
+ <script src="/js/sail.js"></script>
+ <script type="module" src="/js/total.js"></script>
+ <script type="module" src="/js/discount.js"></script>
+ <script src="/js/purchase.js"></script>
+ <script src="/js/purchaseHistory.js"></script>
+ 
+</body>
+</html>
